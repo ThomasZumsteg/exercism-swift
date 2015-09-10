@@ -1,30 +1,29 @@
 import Foundation
 
 class WordCount {
-    var words: String
+    var sentance: String
     
     init(words: String) {
-        self.words = words
+        sentance = words
     }
     
     func count() -> [String: Int] {
         var wordCount = [String:Int]()
+        let spaces = NSCharacterSet.whitespaceCharacterSet()
+        let allowedChars = NSMutableCharacterSet()
+        allowedChars.formUnionWithCharacterSet(NSCharacterSet.letterCharacterSet())
+        allowedChars.formUnionWithCharacterSet(NSCharacterSet.decimalDigitCharacterSet())
         
-        var wordSting = self.words.lowercaseString.characters.filter(isAlphaNum)
-        let words = split(wordSting){$0 == " "}.map{String($0)}
+        allowedChars.formUnionWithCharacterSet(spaces)
         
-        for word in words {
-            if let n = wordCount[word] {
-                wordCount[word] = n + 1
-            } else {
-                wordCount[word] = 1
-            }
+        let words = split(sentance.lowercaseString.utf16
+            .filter{allowedChars.characterIsMember($0)})
+            {spaces.characterIsMember($0)}
+        
+        for w in words {
+            let word = String(w.map{Character(UnicodeScalar($0))})
+            wordCount[word] = (wordCount[word] ?? 0) + 1
         }
         return wordCount
-    }
-    
-    func isAlphaNum(c:Character) -> Bool {
-        let alphaNum = Set("abcdefghijklmnopqrstuvwxyz0123456789 ".characters)
-        return alphaNum.isSupersetOf(Set([c]))
     }
 }
