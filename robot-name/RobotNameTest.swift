@@ -27,7 +27,7 @@ class RobotNameTest: XCTestCase {
     }
 
     func testResetName() {
-        var robot = Robot()
+        let robot = Robot()
         let firstName = robot.name
         robot.resetName()
         let secondName = robot.name

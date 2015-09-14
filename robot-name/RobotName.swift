@@ -1,11 +1,13 @@
 import Foundation
 
 let letters = Array(65...90).map{Character(UnicodeScalar($0))}
-let numbers = Array(48...57).map{Character(UnicodeScalar($0))}
+let numbers: [Int] = Array(0..<1000)
 
-func randFrom(items: [Character]) -> Character {
-    let i = arc4random_uniform(UInt32(items.count))
-    return items[Int(i)]
+extension Array {
+    func random() -> Element {
+        let i = arc4random_uniform(UInt32(self.count))
+        return self[Int(i)]
+    }
 }
 
 class Robot {
@@ -19,13 +21,9 @@ class Robot {
     func resetName() {
         let oldName = name
         repeat {
-            name = String([
-                    randFrom(letters),
-                    randFrom(letters),
-                    randFrom(numbers),
-                    randFrom(numbers),
-                    randFrom(numbers)
-            ])
+            let alph = "\(letters.random())\(letters.random())"
+            let nums = String(format: "%03d", numbers.random())
+            name = alph + nums
         } while Robot.namesInUse.contains(name)
         if oldName != nil { Robot.namesInUse.remove(oldName!) }
     }
