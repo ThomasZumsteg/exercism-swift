@@ -16,10 +16,10 @@ class WordCount {
         
         allowedChars.formUnionWithCharacterSet(spaces)
         
-        let words = split(sentance.lowercaseString.utf16
-            .filter{allowedChars.characterIsMember($0)})
-            {spaces.characterIsMember($0)}
-        
+        let words = sentance.lowercaseString.utf16
+            .filter{allowedChars.characterIsMember($0)}
+            .split{spaces.characterIsMember($0)}
+    
         for w in words {
             let word = String(w.map{Character(UnicodeScalar($0))})
             wordCount[word] = (wordCount[word] ?? 0) + 1
