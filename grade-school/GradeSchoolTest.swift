@@ -15,7 +15,7 @@ class GradeSchoolTest: XCTestCase
         school.addStudent("Aimee", grade: 2)
         let result = school.db
         let expected: Dictionary = [2: ["Aimee"]]
-        XCTAssertEqual(result.keys.array, expected.keys.array)
+        XCTAssertEqual(Array(result.keys), Array(expected.keys))
         XCTAssertEqual(result[2]!, expected[2]!)
     }
 
@@ -26,7 +26,7 @@ class GradeSchoolTest: XCTestCase
         school.addStudent("Paul", grade: 2)
         let result = school.db
         let expected = [2: ["Fred", "James", "Paul"]]
-        XCTAssertEqual(result.keys.array, expected.keys.array)
+        XCTAssertEqual(Array(result.keys), Array(expected.keys))
         XCTAssertEqual(result[2]!, expected[2]!)
     }
 
@@ -36,7 +36,7 @@ class GradeSchoolTest: XCTestCase
         school.addStudent("Logan", grade: 7)
         let result = school.db
         let expected = [3: ["Chelsea"], 7: ["Logan"]]
-        XCTAssertEqual(result.keys.array.sort(>), expected.keys.array.sort(>))
+        XCTAssertEqual(result.keys.sort(>), expected.keys.sort(>))
         XCTAssertEqual(result[3]!, expected[3]!)
     }
 
@@ -73,7 +73,7 @@ class GradeSchoolTest: XCTestCase
             6 : [ "Kareem"]
         ]
         
-        XCTAssertEqual(result.keys.array.sort(>), expected.keys.array.sort(>))
+        XCTAssertEqual(result.keys.sort(>), expected.keys.sort(>))
         XCTAssertEqual(result[3]!, expected[3]!)
         XCTAssertEqual(result[4]!, expected[4]!)
         XCTAssertEqual(result[6]!, expected[6]!)
