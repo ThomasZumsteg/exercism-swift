@@ -1,6 +1,6 @@
 import Foundation
 
-class ETL {
+final class ETL {
     class func transform(old:[Int:[String]]) -> [String: Int] {
         var new = [String: Int]()
         for (key, values) in old {
