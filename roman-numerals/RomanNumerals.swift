@@ -12,9 +12,10 @@ extension Int {
             var remainer = self
             var roman = ""
             for (value, digit) in romanDigits.reverse() {
-                roman += Array(count: remainer / value, repeatedValue: digit).joinWithSeparator("")
-                remainer = remainer % value
-
+                while value <= remainer {
+                    roman += digit
+                    remainer -= value
+                }
             }
             return roman
         }
