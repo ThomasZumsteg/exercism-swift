@@ -10,20 +10,26 @@ class PigLatin {
     }
     
     private static func translateWord(word: String) -> String {
-        let patterns = ["^(.*?[^q])(u.*)", "^(y[^aeiou].*)()$", "^(.*?)([aeoi].*)$", "^(.*)()$"]
-        var pre: String = ""
-        var post: String = ""
+        let patterns = [
+            "^(.*?[^q])(u.*)", // U is first vowel, but not qu
+            "^(.*?y[^aeiou].*)()$", // Y is first vowel
+            "^(.*?)([aeio].*)$", // Base case
+        ]
+        let wholeWord: NSRange = NSMakeRange(0, word.characters.count)
         for pattern in patterns {
             let pigRegex = try! NSRegularExpression(pattern: pattern, options: [])
-            let match = pigRegex.matchesInString(word, options: [], range: NSMakeRange(0, word.characters.count))
+            let match = pigRegex.matchesInString(word, options: [], range: wholeWord)
             
-            guard match.count > 0 else {continue }
+            guard match.count > 0 else { continue }
             
-            pre = (word as NSString).substringWithRange(match[0].rangeAtIndex(1))
-            post = (word as NSString).substringWithRange(match[0].rangeAtIndex(2))
+            let pre: String = (word as NSString).substringWithRange(match[0].rangeAtIndex(1))
+            let post: String = (word as NSString).substringWithRange(match[0].rangeAtIndex(2))
             
-            if pre + "ay" != word { break }
+            // Cases like ayxray
+            if post != "ay" { return post + pre + "ay" }
         }
-        return post + pre + "ay"
+        
+//        Default case
+        return word + "ay"
     }
 }
