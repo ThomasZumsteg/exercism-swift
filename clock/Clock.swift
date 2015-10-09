@@ -1,6 +1,6 @@
 import Foundation
 
-class Clock: NSObject, Comparable {
+class Clock: CustomStringConvertible, Comparable {
     let time: Int
     
     init(hours: Int = 0, minutes: Int = 0) {
@@ -8,17 +8,9 @@ class Clock: NSObject, Comparable {
         time = mins > 0 ? mins : mins + (24 * 60)
     }
     
-    override var description: String {
+    var description: String {
         get {
             return String(format: "%02d:%02d", arguments: [time / 60, time % 60])
-        }
-    }
-    
-    override func isEqual(object: AnyObject?) -> Bool {
-        if let clock = object as? Clock {
-            return time == clock.time
-        } else {
-            return false
         }
     }
 
@@ -29,6 +21,10 @@ class Clock: NSObject, Comparable {
     func subtract(hours: Int = 0, minutes: Int = 0) -> Clock {
         return Clock(hours: hours, minutes: time - minutes)
     }
+}
+
+func ==(lhs: Clock, rhs: Clock) -> Bool {
+    return lhs.time == rhs.time
 }
 
 func <(lhs: Clock, rhs: Clock) -> Bool {
