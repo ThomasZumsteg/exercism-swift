@@ -53,4 +53,14 @@ class LinkedListTest: XCTestCase {
         XCTAssertEqual(30, deque.shift()! )
     }
     
+    func testMulti() {
+        let deque = Deque<Int>()
+        for i in 0...5 {
+            deque.push(i)
+        }
+        
+        for i in Array(0...5) {
+            XCTAssertEqual(i, deque.shift())
+        }
+    }
 }
