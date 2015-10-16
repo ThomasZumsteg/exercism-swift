@@ -3,14 +3,14 @@ import Foundation
 class Tournament {
     typealias record = (MP:Int, W:Int, D:Int, L:Int, P:Int)
     var scores = [String: record]()
+    private let win: record = (MP:1, W:1, D:0, L:0, P:3)
+    private let loss: record = (MP:1, W:0, D:0, L:1, P:0)
+    private let draw: record = (MP:1, W:0, D:1, L:0, P:1)
+    private let header: String = "Team                           | MP |  W |  D |  L |  P"
     
     init() { }
     
-    func tally(games input: String) -> String {
-        let win: record = (MP:1, W:1, D:0, L:0, P:3)
-        let loss: record = (MP:1, W:0, D:0, L:1, P:0)
-        let draw: record = (MP:1, W:0, D:1, L:0, P:1)
-        
+    func tally(input: String) -> String {
         let games: [[String]] = input
             .characters
             .split("\n")
