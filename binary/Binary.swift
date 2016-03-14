@@ -14,3 +14,9 @@ class Binary {
         }
     }
 }
+
+extension Int {
+    init(_ binary:Binary?) {
+        self.init(binary!.toDecimal)
+    }
+}
