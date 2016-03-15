@@ -1,26 +1,23 @@
 import Foundation
 
-typealias School = [Int:[String]]
-
 class GradeSchool {
-    var db: School
-    
-    init() { db = School() }
-    
+    var roster = [Int:[String]]()
     
     func addStudent(student: String, grade: Int) {
-        db[grade] = (db[grade] ?? []) + [student]
+        roster[grade] = (roster[grade] ?? []) + [student]
     }
     
     func studentsInGrade(grade: Int) -> [String] {
-        return db[grade] ?? []
+        return roster[grade] ?? []
     }
     
-    func sortedRoster() -> School {
-        var sorted = School()
-        for k in db.keys.sort() {
-            sorted[k] = db[k]!.sort()
+    var sortedRoster: [Int:[String]] {
+        get {
+            var sorted = [Int:[String]]()
+            for k in roster.keys.sort() {
+                sorted[k] = roster[k]!.sort()
+            }
+            return sorted
         }
-        return sorted
     }
 }
