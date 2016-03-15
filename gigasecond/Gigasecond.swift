@@ -1,11 +1,16 @@
 import Foundation
 
 class Gigasecond {
-    static func from(strDate: String) -> NSDate {
+    var description: String = ""
+    init?(from: String) {
         let dateFormatter = NSDateFormatter()
         dateFormatter.timeZone = NSTimeZone(forSecondsFromGMT: 0)
         dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
-        let date = dateFormatter.dateFromString(strDate)!
-        return date.dateByAddingTimeInterval(1_000_000_000)
+        if let date = dateFormatter.dateFromString(from) {
+            let later = date.dateByAddingTimeInterval(1_000_000_000)
+            description = dateFormatter.stringFromDate(later)
+        } else {
+            return nil
+        }
     }
 }
