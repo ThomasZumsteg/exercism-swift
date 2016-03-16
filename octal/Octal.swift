@@ -18,3 +18,9 @@ class Octal {
         }
     }
 }
+
+extension Int {
+    init(_ oct: Octal) {
+        self.init(oct.toDecimal)
+    }
+}
