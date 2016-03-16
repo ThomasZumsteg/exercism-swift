@@ -1,9 +1,26 @@
 import Foundation
 
 class PrimeFactors {
-    static func For(num:Int, var _ factor:Int = 2) -> [Int] {
-        if num == 1 { return [] }
-        while (num % factor) != 0 { factor++ }
-        return [factor] + For(num / factor, factor)
+    let num: Int
+    
+    init(_ num: Int) {
+        self.num = num
+    }
+    
+    var toArray: [Int] {
+        get {
+            var factors = [Int]()
+            var remainder = num
+            var factor: Int = 2
+            while( remainder > 1 ) {
+                if( remainder % factor == 0) {
+                    factors.append(factor)
+                    remainder /= factor
+                } else {
+                    factor += 1
+                }
+            }
+            return factors
+        }
     }
 }
