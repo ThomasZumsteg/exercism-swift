@@ -1,16 +1,23 @@
 import Foundation
 
 class Raindrops {
-    static let pairs = [
+    let pairs = [
         (3, "Pling"),
         (5, "Plang"),
         (7, "Plong"),
     ]
+    let num: Int
     
-    static func convert(num: Int) -> String {
-        let sound: String = pairs
-            .map({(f, s) in num % f == 0 ? s : ""})
-            .joinWithSeparator("")
-        return sound == "" ? String(num) : sound
+    init(_ num: Int) {
+        self.num = num
+    }
+    
+    var sounds: String {
+        get {
+            let sound: String = pairs
+                .map({(f, s) in self.num % f == 0 ? s : ""})
+                .joinWithSeparator("")
+            return sound == "" ? String(num) : sound
+        }
     }
 }
