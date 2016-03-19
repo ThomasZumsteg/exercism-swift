@@ -1,6 +1,6 @@
 import Foundation
 
-class CustomSet<T: Hashable>: NSObject {
+class CustomSet<T: Hashable where T:Comparable>: NSObject {
     var items: Set<T>
     
     init(_ items: [T]) {
