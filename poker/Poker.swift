@@ -68,13 +68,13 @@ class PokerHand {
         throw Error.InvalidSuit
     }
 
-    private func isFlush() -> Bool {
+    func isFlush() -> Bool {
         return cards
             .reduce(true){$0 && $1.suit == cards[0].suit}
     }
     
-    private func isStraight() -> Bool {
-        let ranks = cards.map({$0.value})
+    func isStraight() -> Bool {
+        let ranks = cards.map({$0.value}).sort(<)
         if ranks == [2,3,4,5,14] {
             return true
         }
@@ -86,28 +86,40 @@ class PokerHand {
         return true
     }
     
-    private func getRank() -> Int {
-        let cardGroups = [1,1,1,1,1]
+    func getGroups() -> [[Card]] {
+        var groups = [Int: [Card]]()
+        for card in cards {
+            if let group = groups[card.value] {
+                groups[card.value] = group + [card]
+            } else {
+                groups[card.value] = [card]
+            }
+        }
+        return Array(groups.values)
+    }
+    
+    func getRank() -> PokerHand.Rank {
+        let cardGroups = getGroups().map({$0.count}).sort(<)
         
         switch true {
         case isFlush() && isStraight():
-            return Rank.StraighFlush.rawValue
+            return Rank.StraighFlush
         case cardGroups == [1,4]:
-            return Rank.FourOfAKind.rawValue
+            return Rank.FourOfAKind
         case cardGroups == [2,3]:
-            return Rank.FullHouse.rawValue
+            return Rank.FullHouse
         case isFlush() && !isStraight():
-            return Rank.Flush.rawValue
+            return Rank.Flush
         case !isFlush() && isStraight():
-            return Rank.Straight.rawValue
+            return Rank.Straight
         case cardGroups == [1,1,3]:
-            return Rank.ThreeOfAKind.rawValue
+            return Rank.ThreeOfAKind
         case cardGroups == [1,2,2]:
-            return Rank.TwoPair.rawValue
+            return Rank.TwoPair
         case cardGroups == [1,1,1,2]:
-            return Rank.OnePair.rawValue
+            return Rank.OnePair
         default:
-            return Rank.HighCard.rawValue
+            return Rank.HighCard
         }
    }
 
@@ -121,12 +133,9 @@ func <(lhs: PokerHand?, rhs: PokerHand?) -> Bool {
         return false
     }
     
-    if leftHand.getRank() != rightHand.getRank() {
-        return leftHand.getRank() < rightHand.getRank()
+    if leftHand.getRank().rawValue != rightHand.getRank().rawValue {
+       return leftHand.getRank().rawValue < rightHand.getRank().rawValue
     }
     
-    for (leftCard, rightCard) in zip(leftHand.cardGroups(), rightHand.cardGroups()) {
-
-    }
     return true
 }

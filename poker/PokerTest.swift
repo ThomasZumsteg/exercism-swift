@@ -17,6 +17,20 @@ class PokerTest: XCTestCase {
         }
     }
     
+    func testGetRank() {
+        XCTAssertEqual(PokerHand("3♡ 10♢ 7♧ 8♤ A♢")!.getRank(), PokerHand.Rank.HighCard, "HighCard")
+        XCTAssertEqual(PokerHand("3♡ 3♤ 5♧ 6♢ 9♢")!.getRank(), PokerHand.Rank.OnePair)
+        XCTAssertEqual(PokerHand("2♢ 8♡ 5♢ 2♡ 8♧")!.getRank(), PokerHand.Rank.TwoPair)
+        XCTAssertEqual(PokerHand("3♡ 8♡ 3♢ 3♧ 8♧")!.getRank(), PokerHand.Rank.FullHouse)
+        XCTAssertEqual(PokerHand("Q♡ K♡ J♢ 10♧ 9♡")!.getRank(), PokerHand.Rank.Straight)
+        XCTAssertEqual(PokerHand("4♤ 3♤ 8♤ J♤ K♤")!.getRank(), PokerHand.Rank.Flush)
+    }
+    
+    func testGetGroups() {
+        XCTAssertEqual(PokerHand("3♡ 10♢ 7♧ 8♤ A♢")!.getGroups().map{$0.count}, [1,1,1,1,1], "All Different")
+        XCTAssertEqual(PokerHand("3♡ 3♤ 5♧ 6♢ 9♢")!.getGroups().map({$0.count}).sort(>), [2,1,1,1], "One Pair")
+    }
+    
     override func setUp() {
         super.setUp()
         
