@@ -28,7 +28,22 @@ class PokerTest: XCTestCase {
     
     func testGetGroups() {
         XCTAssertEqual(PokerHand("3♡ 10♢ 7♧ 8♤ A♢")!.getGroups().map{$0.count}, [1,1,1,1,1], "All Different")
-        XCTAssertEqual(PokerHand("3♡ 3♤ 5♧ 6♢ 9♢")!.getGroups().map({$0.count}).sort(>), [2,1,1,1], "One Pair")
+        XCTAssertEqual(PokerHand("3♡ 3♤ 5♧ 6♢ 9♢")!.getGroups().map({$0.count}).sort(), [1,1,1,2], "One Pair")
+        XCTAssertEqual(PokerHand("2♢ 8♡ 5♢ 2♡ 8♧")!.getGroups().map({$0.count}).sort(), [1,2,2])
+        XCTAssertEqual(PokerHand("3♡ 8♡ 3♢ 3♧ 8♧")!.getGroups().map({$0.count}).sort(), [2,3])
+    }
+    
+    func testRankLessThan() {
+        XCTAssertTrue(PokerHand.Rank.OnePair < PokerHand.Rank.Flush)
+        XCTAssertFalse(PokerHand.Rank.Flush < PokerHand.Rank.Flush)
+        XCTAssertTrue(PokerHand.Rank.StraighFlush > PokerHand.Rank.Flush)
+        XCTAssertTrue(PokerHand.Rank.HighCard < PokerHand.Rank.Flush)
+    }
+    
+    func testLessThan() {
+        XCTAssertTrue(PokerHand("3♡ 10♢ 7♧ 8♤ A♢") <
+            PokerHand("3♡ 8♡ 3♢ 3♧ 8♧"))
+        XCTAssertTrue(PokerHand("2♢ 8♡ 5♢ 2♡ 8♧") < PokerHand("4♢ J♧ 4♤ J♤ K♤"))
     }
     
     override func setUp() {

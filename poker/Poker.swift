@@ -13,7 +13,7 @@ struct Card {
     let value, suit: Int
 }
 
-class PokerHand {
+class PokerHand: Comparable {
     let hand: String
     var cards = [Card]()
     
@@ -22,7 +22,7 @@ class PokerHand {
     }
 
     enum Rank: Int {
-        case HighCard = 0, OnePair, TwoPair, ThreeOfAKind, Straight, Flush, FullHouse, FourOfAKind, StraighFlush
+        case HighCard, OnePair, TwoPair, ThreeOfAKind, Straight, Flush, FullHouse, FourOfAKind, StraighFlush
     }
     
     init?(_ hand: String) {
@@ -95,7 +95,11 @@ class PokerHand {
                 groups[card.value] = [card]
             }
         }
-        return Array(groups.values)
+        return groups
+            .sort(byGroupSizeThenRank)
+            .map({ $0.1.sort(bySuit) })
+            .reduce([], combine: +)
+        
     }
     
     func getRank() -> PokerHand.Rank {
@@ -125,17 +129,27 @@ class PokerHand {
 
 }
 
-func <(lhs: PokerHand?, rhs: PokerHand?) -> Bool {
-    guard let leftHand = lhs else {
-        return true
-    }
-    guard let rightHand = rhs else {
-        return false
+func <<T: RawRepresentable where T.RawValue: Comparable>(a: T, b: T) -> Bool {
+    return a.rawValue < b.rawValue
+}
+
+extension PokerHand.Rank: Comparable { }
+
+func <(lhs: PokerHand, rhs: PokerHand) -> Bool {
+    if lhs.getRank() != rhs.getRank() {
+       return lhs.getRank() < rhs.getRank()
     }
     
-    if leftHand.getRank().rawValue != rightHand.getRank().rawValue {
-       return leftHand.getRank().rawValue < rightHand.getRank().rawValue
-    }
+    let rightCards = rhs
+        .getGroups()
+        .sort(sortBySizeThenRank)
+    let leftCards = rhs
+        .getGroups()
+        .sort(sortBySizeThenRank).map
     
-    return true
+    return false
+}
+
+func ==(lhs: PokerHand, rhs: PokerHand) -> Bool {
+    return lhs.getRank() == rhs.getRank()
 }
