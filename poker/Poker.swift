@@ -62,7 +62,7 @@ class PokerHand: Comparable {
     
     func getSuit(card: String) throws -> Int {
         let suit = card.substringFromIndex(card.endIndex.predecessor())
-        if let suitScore = ["♡", "♢", "♧", "♤"].indexOf(suit) {
+        if let suitScore = ["♧", "♢", "♡", "♤"].indexOf(suit) {
             return suitScore
         }
         throw Error.InvalidSuit
@@ -78,7 +78,7 @@ class PokerHand: Comparable {
         if ranks == [2,3,4,5,14] {
             return true
         }
-        for var i = 1; i < ranks.count; i++ {
+        for i in 1 ..< ranks.count {
             if ranks[i-1] + 1 != ranks[i] {
                 return false
             }
@@ -98,8 +98,17 @@ class PokerHand: Comparable {
         return groups
             .sort(byGroupSizeThenRank)
             .map({ $0.1.sort(bySuit) })
-            .reduce([], combine: +)
-        
+    }
+    
+    func byGroupSizeThenRank(leftGroup: (Int, [Card]), rightCards: (Int, [Card])) -> Bool {
+        if leftGroup.1.count != rightCards.1.count {
+            return leftGroup.1.count > rightCards.1.count
+        }
+        return leftGroup.0 > rightCards.0
+    }
+    
+    func bySuit(leftCard: Card, rightCard: Card) -> Bool {
+        return leftCard.suit > rightCard.suit
     }
     
     func getRank() -> PokerHand.Rank {
@@ -142,12 +151,18 @@ func <(lhs: PokerHand, rhs: PokerHand) -> Bool {
     
     let rightCards = rhs
         .getGroups()
-        .sort(sortBySizeThenRank)
-    let leftCards = rhs
+        .reduce([], combine: +)
+    let leftCards = lhs
         .getGroups()
-        .sort(sortBySizeThenRank).map
+        .reduce([], combine: +)
     
-    return false
+    for (leftCard, rightCard) in zip(leftCards, rightCards) {
+        if leftCard.value != rightCard.value {
+            return leftCard.value < rightCard.value
+        }
+    }
+
+    return true
 }
 
 func ==(lhs: PokerHand, rhs: PokerHand) -> Bool {
