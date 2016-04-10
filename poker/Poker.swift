@@ -162,7 +162,10 @@ func <(lhs: PokerHand, rhs: PokerHand) -> Bool {
         }
     }
 
-    return true
+    let maxLeft = leftCards.maxElement({ $0.value < $1.value})!
+    let maxRight=rightCards.maxElement({ $0.value < $1.value})!
+    
+    return maxLeft.suit < maxRight.suit
 }
 
 func ==(lhs: PokerHand, rhs: PokerHand) -> Bool {
