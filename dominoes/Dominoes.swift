@@ -1,34 +1,46 @@
 
-typealias Dominoe = (Int, Int)
-
 class Dominoes {
     let dominoes: [Dominoe]
     
-    init(_ chain: [Dominoe]) {
-        dominoes = chain
+    init(_ chain: [(Int, Int)]) {
+        dominoes = chain.map{Dominoe($0.0, $0.1)}
     }
     
     var chained: Bool {
-        var pool = dominoes
-        guard let root = pool.popLast() else {
-            return false
-        }
+        var queue = [([(Int, Int)](), [Dominoe](), Int)]
         
-        var chain = [root]
-        var openNum = root.1
-        while !pool.isEmpty {
-            guard let i = pool.indexOf({ $0.0 == openNum || $0.1 == openNum }) else {
-                return false
+        while !queue.isEmpty {
+            let (chain, pool, tail) = queue.popLast()!
+            if pool.isEmpty && chain.first!.0 == chain.last!.1 {
+                return true
             }
-            let (first, second) = pool.removeAtIndex(i)
-            if first == openNum {
-                openNum = second
-                chain.append((first, second))
-            } else {
-                openNum = first
-                chain.append((second, first))
+            
+            for i in (0...pool.count) {
+                if let match = pool[i].hasNum(tail) {
+                    let newPool = pool[0..<i] + pool[i..<pool.count]
+                    let newChain = chain + [match]
+                    let newTail = match.1
+                    queue.append((newTail, newPool, newTail))
+                }
             }
+            
         }
-        return chain.first!.0 == chain.last!.1
+    }
+}
+
+class Dominoe {
+    let left, right: Int
+    
+    init(_ left: Int, _ right: Int) {
+        self.left = left
+        self.right = right
+    }
+    
+    func hasNum(num: Int) -> (Int, Int)? {
+        switch num {
+        case left: return (left, right)
+        case right: return (right, left)
+        default: return nil
+        }
     }
 }
