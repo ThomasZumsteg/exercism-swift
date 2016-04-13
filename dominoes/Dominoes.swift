@@ -1,4 +1,5 @@
 
+/*Domines simulates a dominoes game*/
 class Dominoes {
     let dominoes: [Dominoe]
     
@@ -6,21 +7,22 @@ class Dominoes {
         dominoes = chain.map{Dominoe($0.0, $0.1)}
     }
     
+    /*Chain is a chain of tiles*/
     typealias Chain = [(Int, Int)]
-    typealias DominoeState = (Chain, [Dominoe], Int)
+    
+    /*DominueState is the iterative state used to search for possible chains*/
+    typealias DominoeState = (chain: Chain, pool:[Dominoe], tail:Int)
+
+    /*chained checks if there is a matched sequence of dominoes that usese all the avaiable tiles
+     Uses an iteraive search of all possible chains*/
     var chained: Bool {
-        var queue = [DominoeState]()
-        
-        for (i, dominoe) in dominoes.enumerate() {
-            let newPool = dominoes.prefix(i) + dominoes.suffixFrom(i + 1)
-            queue.append((
-                [(dominoe.left, dominoe.right)],
-                Array(newPool),
-                dominoe.right))
-            queue.append((
-                [(dominoe.right, dominoe.left)],
-                Array(newPool),
-                dominoe.left))
+        var queue = dominoes.enumerate().map{
+            (i, dominoe) -> DominoeState in (
+                chain: [(dominoe.left, dominoe.right)],
+                pool: Array(
+                    dominoes.prefix(i) +
+                    dominoes.suffixFrom(i + 1)),
+                tail: dominoe.right)
         }
         
         while !queue.isEmpty {
@@ -32,7 +34,7 @@ class Dominoes {
             
             for i in (0..<pool.count) {
                 if let match = pool[i].hasNum(tail) {
-                    let newPool = pool[0..<i] + pool[i..<pool.count]
+                    let newPool = pool.prefix(i) + pool.suffixFrom(i + 1)
                     let newChain = chain + [match]
                     let newTail = match.1
                     queue.append((newChain, Array(newPool), newTail))
@@ -44,6 +46,7 @@ class Dominoes {
     }
 }
 
+/*Dominue represents a single tile*/
 class Dominoe {
     let left, right: Int
     
@@ -52,6 +55,7 @@ class Dominoe {
         self.right = right
     }
     
+    /*hasNum returns a tile with the matching side on the left if it exists*/
     func hasNum(num: Int) -> (Int, Int)? {
         switch num {
         case left: return (left, right)
